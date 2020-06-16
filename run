@@ -1,5 +1,9 @@
 #!/bin/sh
 
+## Runs apostrophe cms and mongod, passing all options to app.js
+## You can replace any calls to "node app.js" with "./run"
+
+BASEDIR="$(dirname "$0")"
 
 ESCAPE_CHAR=$(printf '\033') # Special escape character that allows for color codes
 # See: https://misc.flogisoft.com/bash/tip_colors_and_formatting
@@ -10,8 +14,8 @@ RED_ESCAPE="${ESCAPE_CHAR}[91m"
 CYAN_ESCAPE="${ESCAPE_CHAR}[96m"
 COLOR_RESET_ESCAPE="${ESCAPE_CHAR}[39m"
 
-MONGO_CMD="mongod --dbpath `pwd`/db"
-APOSTROPHE_CMD="node app.js $@"
+MONGO_CMD="mongod --dbpath $BASEDIR/db"
+APOSTROPHE_CMD="sleep 0.3 && node app.js $@"
 
 parallel --jobs 2 --lb ::: \
         "$MONGO_CMD 2>&1 | sed -u 's/^/${RED_ESCAPE}mongo |$COLOR_RESET_ESCAPE /'" \
